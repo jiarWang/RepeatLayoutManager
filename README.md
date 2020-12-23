@@ -21,6 +21,7 @@
 * 效果
 <div  align="center">
 <img src="./readme/h_layoutmanager.gif" width = "260" height = "490" alt="1xx"/>
+<img src="./readme/v_layoutmanager.gif" width = "260" height = "490" alt="1xx"/>
 </div>
 
 <hr/>
