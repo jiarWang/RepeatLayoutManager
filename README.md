@@ -1,6 +1,5 @@
 # RepeatLayoutManager
 
-</div>
 一款可以让`RecyclerView`无限循环的`LayoutManager`
 
 ## 使用
@@ -13,18 +12,18 @@
 
 * 在代码中使用 
 ```java
-        RecyclerView recyclerView = findViewById(R.id.rv_demo);
-        recyclerView.setAdapter(new DemoAdapter());
-        recyclerView.setLayoutManager(new RepeatLayoutManager(RecyclerView.VERTICAL));
+RecyclerView recyclerView = findViewById(R.id.rv_demo);
+recyclerView.setAdapter(new DemoAdapter());
+recyclerView.setLayoutManager(new RepeatLayoutManager(RecyclerView.VERTICAL));
 ```
 
 * 效果
 <div  align="center">
 <img src="./readme/h_layoutmanager.gif" width = "260" height = "490" alt="1xx"/>
-<img src="./readme/v_layoutmanager.gif" width = "260" height = "490" alt="1xx"/>
+<img src="./readme/v_layoutmanager.gif" width = "260" height = "490" alt="2xx"/>
 </div>
 
-<hr/>
+## License
 
 ```
    Copyright 2020 wangjian
