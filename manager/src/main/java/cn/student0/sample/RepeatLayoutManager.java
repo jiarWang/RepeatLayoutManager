@@ -11,6 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
  * @Describe :
  */
 public class RepeatLayoutManager extends RecyclerView.LayoutManager {
+
+    @RecyclerView.Orientation
+    int mOrientation = RecyclerView.HORIZONTAL;
+
+    public RepeatLayoutManager(@RecyclerView.Orientation int orientation) {
+        mOrientation = orientation;
+    }
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -19,7 +27,12 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public boolean canScrollHorizontally() {
-        return true;
+        return mOrientation == RecyclerView.HORIZONTAL;
+    }
+
+    @Override
+    public boolean canScrollVertically() {
+        return mOrientation == RecyclerView.VERTICAL;
     }
 
     @Override
@@ -32,36 +45,68 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
         }
         //将所有Item分离至scrap
         detachAndScrapAttachedViews(recycler);
-        int itemLeft = getPaddingLeft();
-        for (int i = 0; ; i++) {
-            if (itemLeft > getWidth() - getPaddingRight()) {
-                break;
+        layoutChunk(recycler);
+    }
+
+    private void layoutChunk(RecyclerView.Recycler recycler) {
+
+        if (mOrientation == RecyclerView.HORIZONTAL) {
+            int itemLeft = getPaddingLeft();
+            for (int i = 0; ; i++) {
+                if (itemLeft > getWidth() - getPaddingRight()) {
+                    break;
+                }
+                View itemView = recycler.getViewForPosition(i % getItemCount());
+
+                addView(itemView);
+                measureChildWithMargins(itemView, 0, 0);
+
+                int top = getPaddingTop();
+                int right = itemLeft + getDecoratedMeasuredWidth(itemView);
+                int bottom = top + getDecoratedMeasuredHeight(itemView);
+                layoutDecorated(itemView, itemLeft, top, right, bottom);
+                itemLeft = right;
             }
-            View itemView = recycler.getViewForPosition(i % getItemCount());
+        } else {
+            int itemTop = getPaddingTop();
+            for (int i = 0; ; i++) {
+                if (itemTop > getHeight() - getPaddingBottom()) {
+                    break;
+                }
+                View itemView = recycler.getViewForPosition(i % getItemCount());
 
-            addView(itemView);
-            measureChildWithMargins(itemView, 0, 0);
+                addView(itemView);
+                measureChildWithMargins(itemView, 0, 0);
 
-            int right = itemLeft + getDecoratedMeasuredWidth(itemView);
-            int top = getPaddingTop();
-            int bottom = top + getDecoratedMeasuredHeight(itemView) - getPaddingBottom();
-            layoutDecorated(itemView, itemLeft, top, right, bottom);
-            itemLeft = right;
+                int left = getPaddingLeft();
+                int bottom = itemTop + getDecoratedMeasuredHeight(itemView);
+                int right = left + getDecoratedMeasuredWidth(itemView);
+                layoutDecorated(itemView, left, itemTop, right, bottom);
+                itemTop = bottom;
+            }
         }
     }
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        fill(recycler, dx > 0);
+        fillHorizontal(recycler, dx > 0);
         offsetChildrenHorizontal(-dx);
         recyclerChildView(dx > 0, recycler);
         return dx;
     }
 
-    /**
-     * 左右滑动的时候，填充
+    @Override
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        fillVertical(recycler, dy > 0);
+        offsetChildrenVertical(-dy);
+        recyclerChildView(dy > 0, recycler);
+        return dy;
+    }
+
+    /*
+     *横向填充
      */
-    private void fill(RecyclerView.Recycler recycler, boolean fillEnd) {
+    private void fillHorizontal(RecyclerView.Recycler recycler, boolean fillEnd) {
         if (getChildCount() == 0) return;
         if (fillEnd) {
             //填充尾部
@@ -74,12 +119,10 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
                 View scrapItem = recycler.getViewForPosition(position);
                 addView(scrapItem);
                 measureChildWithMargins(scrapItem, 0, 0);
-                int width = getDecoratedMeasuredWidth(scrapItem);
-                int height = getDecoratedMeasuredHeight(scrapItem);
                 int left = anchorView.getRight();
                 int top = getPaddingTop();
-                int right = left + width;
-                int bottom = top + height - getPaddingBottom();
+                int right = left + getDecoratedMeasuredWidth(scrapItem);
+                int bottom = top + getDecoratedMeasuredHeight(scrapItem);
                 layoutDecorated(scrapItem, left, top, right, bottom);
                 anchorView = scrapItem;
             }
@@ -94,12 +137,57 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
                 View scrapItem = recycler.getViewForPosition(position);
                 addView(scrapItem, 0);
                 measureChildWithMargins(scrapItem, 0, 0);
-                int width = getDecoratedMeasuredWidth(scrapItem);
-                int height = getDecoratedMeasuredHeight(scrapItem);
                 int right = anchorView.getLeft();
                 int top = getPaddingTop();
-                int left = right - width;
-                int bottom = top + height - getPaddingBottom();
+                int left = right - getDecoratedMeasuredWidth(scrapItem);
+                int bottom = top + getDecoratedMeasuredHeight(scrapItem);
+                layoutDecorated(scrapItem, left, top,
+                        right, bottom);
+                anchorView = scrapItem;
+            }
+        }
+        return;
+    }
+
+
+    /*
+     *纵向填充
+     */
+    private void fillVertical(RecyclerView.Recycler recycler, boolean fillEnd) {
+        if (getChildCount() == 0) return;
+        if (fillEnd) {
+            //填充尾部
+            View anchorView = getChildAt(getChildCount() - 1);
+            int anchorPosition = getPosition(anchorView);
+            for (; anchorView.getBottom() < getHeight() - getPaddingBottom(); ) {
+                int position = (anchorPosition + 1) % getItemCount();
+                if (position < 0) position += getItemCount();
+
+                View scrapItem = recycler.getViewForPosition(position);
+                addView(scrapItem);
+                measureChildWithMargins(scrapItem, 0, 0);
+                int left = getPaddingLeft();
+                int top = anchorView.getBottom();
+                int right = left + getDecoratedMeasuredWidth(scrapItem);
+                int bottom = top + getDecoratedMeasuredHeight(scrapItem);
+                layoutDecorated(scrapItem, left, top, right, bottom);
+                anchorView = scrapItem;
+            }
+        } else {
+            //填充首部
+            View anchorView = getChildAt(0);
+            int anchorPosition = getPosition(anchorView);
+            for (; anchorView.getTop() > getPaddingTop(); ) {
+                int position = (anchorPosition - 1) % getItemCount();
+                if (position < 0) position += getItemCount();
+
+                View scrapItem = recycler.getViewForPosition(position);
+                addView(scrapItem, 0);
+                measureChildWithMargins(scrapItem, 0, 0);
+                int left = getPaddingLeft();
+                int right = left + getDecoratedMeasuredWidth(scrapItem);
+                int bottom = anchorView.getTop();
+                int top = bottom - getDecoratedMeasuredHeight(scrapItem);
                 layoutDecorated(scrapItem, left, top,
                         right, bottom);
                 anchorView = scrapItem;
@@ -116,7 +204,9 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
             //回收头部
             for (int i = 0; ; i++) {
                 View view = getChildAt(i);
-                boolean needRecycler = view != null && view.getRight() < getPaddingLeft();
+                if (view == null) return;
+                boolean needRecycler = mOrientation == RecyclerView.HORIZONTAL ?
+                        view.getRight() < getPaddingLeft() : view.getBottom() < getPaddingTop();
                 if (needRecycler) {
                     removeAndRecycleView(view, recycler);
                 } else {
@@ -127,7 +217,9 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
             //回收尾部
             for (int i = getChildCount() - 1; ; i--) {
                 View view = getChildAt(i);
-                boolean needRecycler = view != null && view.getLeft() > getWidth() - getPaddingRight();
+                if (view == null) return;
+                boolean needRecycler = mOrientation == RecyclerView.HORIZONTAL ?
+                        view.getLeft() > getWidth() - getPaddingRight() : view.getTop() > getHeight() - getPaddingBottom();
                 if (needRecycler) {
                     removeAndRecycleView(view, recycler);
                 } else {
