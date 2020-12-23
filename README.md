@@ -7,7 +7,7 @@
 * 添加依赖
 
 ```gradle
- implementation 'cn.student0.manager:repeatmanager:1.0.2'
+implementation 'cn.student0.manager:repeatmanager:1.0.2'
 ```
 
 * 在代码中使用 
