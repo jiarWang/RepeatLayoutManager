@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import cn.student0.manager.RepeatLayoutManager;
 
 public class MainActivity extends AppCompatActivity {
 

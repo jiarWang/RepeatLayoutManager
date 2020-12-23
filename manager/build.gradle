@@ -1,5 +1,22 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.2'
+    }
+}
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.2'
+    }
+}
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -30,4 +47,13 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+}
+
+publish {
+    userOrg = 'zackratos'
+    groupId = 'cn.student0.manager'
+    artifactId = 'repeatlayoutmanager'
+    publishVersion = '1.0.2'
+    desc = 'A LayoutManager for RecyclerView.'
+    website = 'https://https://github.com/jiarWang/RepeatLayoutManager'
 }

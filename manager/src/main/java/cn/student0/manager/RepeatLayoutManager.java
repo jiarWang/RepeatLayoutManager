@@ -1,4 +1,4 @@
-package cn.student0.sample;
+package cn.student0.manager;
 
 import android.view.View;
 import android.view.ViewGroup;
