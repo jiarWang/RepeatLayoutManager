@@ -20,7 +20,7 @@
 
 * 效果
 <div  align="center">
-<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c00a312e889e4f57a952e3a71263b628~tplv-k3u1fbpfcp-watermark.image" width = "260" height = "490" alt="1xx"/>
+<img src="./readme/h_layoutmanager.gif" width = "260" height = "490" alt="1xx"/>
 </div>
 
 <hr/>
