@@ -1,8 +1,10 @@
 package cn.student0.manager;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -85,6 +87,11 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
                 itemTop = bottom;
             }
         }
+    }
+
+    @Override
+    public boolean isAutoMeasureEnabled() {
+        return true;
     }
 
     @Override

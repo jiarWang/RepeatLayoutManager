@@ -45,7 +45,7 @@ publish {
     userOrg = 'student0'
     groupId = 'cn.student0.manager'
     artifactId = 'repeatmanager'
-    publishVersion = '1.0.2'
+    publishVersion = '1.0.3'
     desc = 'A LayoutManager for RecyclerView.'
     website = 'https://github.com/jiarWang/RepeatLayoutManager'
 }

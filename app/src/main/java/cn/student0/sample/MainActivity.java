@@ -14,6 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RecyclerView recyclerView = findViewById(R.id.rv);
         recyclerView.setAdapter(new BeautyAdapter());
-        recyclerView.setLayoutManager(new RepeatLayoutManager(RecyclerView.VERTICAL));
+        recyclerView.setLayoutManager(new RepeatLayoutManager(RecyclerView.HORIZONTAL));
     }
 }
